@@ -1,7 +1,8 @@
 // Closure Compiler externs
 // @link https://developers.google.com/closure/compiler/
 
-window.CacheApiDB = global.CacheApiDB = this.CacheApiDB = self.CacheApiDB = function(store, options) {
+var global;
+window.CacheApiDB = global.CacheApiDB = this.CacheApiDB = self.CacheApiDB = window.onCacheApiDB = global.onCacheApiDB = this.onCacheApiDB = self.onCacheApiDB = function(store, options) {
 
     options.namespace = '';
 

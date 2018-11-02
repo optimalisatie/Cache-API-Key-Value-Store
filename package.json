@@ -1,6 +1,6 @@
 {
     "name": "cache-api-keyval",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Browser Cache API key/value store with +50MB capacity, expiration and JSON object data-type storage.",
     "author": {
         "name": "info@optimization.team",

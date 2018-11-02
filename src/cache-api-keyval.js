@@ -1,5 +1,5 @@
 /**
- * Cache API key/value store - github.com/optimalisatie
+ * Cache API key/value store - github.com/optimalisatie/Cache-API-Key-Value-Store
  * Released under the terms of MIT license
  *
  * Copyright (C) 2018 github.com/optimalisatie
@@ -9,13 +9,35 @@
 
     var _root = ("undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this);
 
-    // detect Cache API support
-    if (!(caches instanceof CacheStorage)) {
-        var error = 'Browser does not support Cache API';
+    function print_error(msg) {
         if (console) {
-            console.error(error);
+            console.error(msg);
         }
-        _root.CacheApiDB = (_root.CacheApiDBFallback) ? _root.CacheApiDBFallback() : function() {
+    }
+
+    var queue = [];
+    _root.onCacheApiDB = function(callback) {
+        if (_root.CacheApiDB) {
+            callback();
+        } else {
+            queue.push(callback);
+        }
+    }
+
+    // set cache api db controller
+    function setCacheApiDB(factory) {
+
+        _root.CacheApiDB = factory;
+
+        // process callback queue
+        var callback = queue.shift();
+        while (callback) {
+            callback();
+        }
+    }
+
+    if (!_root.CacheApiDBFallback) {
+        _root.CacheApiDBFallback = function() {
             var that = this;
             that.supported = 0;
             ['get', 'set', 'del', 'prune'].forEach(function(method) {
@@ -23,16 +45,34 @@
                     return Promise.reject(error);
                 }
             });
-        };
+        }
+    }
+
+    // detect Cache API support
+    if (!(caches instanceof CacheStorage)) {
+        print_error('Browser does not support Cache API');
+        _root.CacheApiDB = _root.CacheApiDBFallback;
     } else {
-        _root.CacheApiDB = factory();
+
+        // test cache support
+        // Cache API could be blocked by browser privacy settings
+        caches.open('x').catch(function(e) {
+            if (e.name == 'SecurityError') {
+                print_error('Cache API is blocked by browser. Please check privacy settings (cookies, no-track option etc).');
+            } else {
+                print_error('Cache API error: ' + e.message);
+            }
+            setCacheApiDB(_root.CacheApiDBFallback);
+        }).then(function() {
+            setCacheApiDB(factory());
+        })
+
     }
 })(function() {
 
     var DATE_HEADER = 'x-date';
     var EXPIRE_HEADER = 'x-expire';
     var CONTENT_TYPE_HEADER = 'Content-Type';
-    var CONTENT_TYPE_JSON = 'application/json';
 
     // return timestamp
     function NOW() {
@@ -62,10 +102,7 @@
                     return false;
                 }
 
-                // detect content type
-                var json = cachedata.headers.get(CONTENT_TYPE_HEADER) === CONTENT_TYPE_JSON;
-
-                return (json) ? cachedata.json() : cachedata.text();
+                return cachedata.json();
             });
 
         });
@@ -82,17 +119,9 @@
             // cache date
             cache_headers[DATE_HEADER] = NOW();
 
-            // JSON content type
-            if (IS_OBJECT(data)) {
-
-                // JSON
-                cache_headers[CONTENT_TYPE_HEADER] = CONTENT_TYPE_JSON;
-                data = JSON.stringify(data);
-            } else {
-                // string
-                data = STRING(data);
-                cache_headers[CONTENT_TYPE_HEADER] = 'text/plain'
-            }
+            // JSON
+            cache_headers[CONTENT_TYPE_HEADER] = 'application/json';
+            data = JSON.stringify(data);
 
             // expire time
             if (expire) {

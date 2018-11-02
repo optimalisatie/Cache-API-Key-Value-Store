@@ -2,7 +2,7 @@
 
 # Cache API Key/Value Store
 
-Fast and tiny key/value store with +50MB storage capacity in [most browsers](https://developer.mozilla.org/en-US/docs/Web/API/Cache#Browser_compatibility), expiration and JSON object data-type.
+Fast and tiny key/value store with +50MB storage capacity in [most browsers](https://developer.mozilla.org/en-US/docs/Web/API/Cache#Browser_compatibility), expiration and JSON object data-type support.
 
 Cache API is currently available in Chrome >= 40, Firefox >=39 and Opera >= 27.
 
@@ -20,29 +20,33 @@ npm install --save cache-api-keyval
 <script src="/cache-api-keyval.js"></script>
 <script>
 
-// load database
-var db = new CacheApiDB('my-store', { namespace: 'optional' });
+// wait for Cache API accessibility test to complete
+onCacheApiDB(function() {
 
-if (db.supported) { // Cache API supported by browser
+    // load database
+    var db = new CacheApiDB('my-store', { namespace: 'optional' });
 
-    // set JSON object data
-    db.set('key', { json: 'object' }); 
+    if (db.supported) { // Cache API supported by browser
 
-    // set text data with expiration in 24 hours
-    db.set('key2', 'string', 86400); 
+        // set JSON object data
+        db.set('key', { json: 'object' }); 
 
-    // get data from cache
-    db.get('key').then(function(json) {
-        console.log('json object', json);
-    });
+        // set text data with expiration in 24 hours
+        db.set('key2', 'string', 86400); 
 
-    // delete key from database
-    db.del('key2'); 
+        // get data from cache
+        db.get('key').then(function(json) {
+            console.log('json object', json);
+        });
 
-    // prune expired cache entries
-    db.prune();
+        // delete key from database
+        db.del('key2'); 
 
-}
+        // prune expired cache entries
+        db.prune();
+    }
+
+});
 </script>
 ```
 
