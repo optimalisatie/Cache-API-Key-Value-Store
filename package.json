@@ -8,7 +8,6 @@
         "web": "optimization.team"
     },
     "keywords": ["Cache", "IndexedDB", "Cache API", "CacheStorage", "keyvalue", "keyval", "key/value"],
-
     "homepage": "https://github.com/optimalisatie/",
     "copyright": "Copyright (C) 2018 Optimization.Team, Utrecht, NLD",
     "main": "cache-api-keyval.js",
