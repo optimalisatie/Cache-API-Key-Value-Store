@@ -36,13 +36,15 @@
         }
     }
 
+    var nosupport_error = 'Browser does not support Cache API';
+
     if (!_root.CacheApiDBFallback) {
         _root.CacheApiDBFallback = function() {
             var that = this;
             that.supported = 0;
             ['get', 'set', 'del', 'prune'].forEach(function(method) {
                 that[method] = function() {
-                    return Promise.reject(error);
+                    return Promise.reject(nosupport_error);
                 }
             });
         }
@@ -50,7 +52,7 @@
 
     // detect Cache API support
     if (!(caches instanceof CacheStorage)) {
-        print_error('Browser does not support Cache API');
+        print_error(nosupport_error);
         _root.CacheApiDB = _root.CacheApiDBFallback;
     } else {
 
