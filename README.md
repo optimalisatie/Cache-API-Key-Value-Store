@@ -21,6 +21,7 @@ npm install --save cache-api-keyval
 <script>
 
 // wait for Cache API accessibility test to complete
+// the test is very fast, should be instant
 onCacheApiDB(function() {
 
     // load database
