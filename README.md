@@ -51,7 +51,7 @@ To enable a fallback storage for browsers that do not yet support Cache API, you
 window.CacheApiDBFallback = function(store, options) {
     this.get = function(key) { /* return key from store */ }
     this.set = function(key,data,expire) { /* set key in store */ }
-    this.det = function(key) { /* delete key from store */ }
+    this.del = function(key) { /* delete key from store */ }
     this.prune = function() { /* cleanup database */ }
 };
 ```
