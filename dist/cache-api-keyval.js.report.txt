@@ -1,0 +1,7 @@
+WARNING - unknown @define variable DEBUG
+
+cache-api-keyval.ext.js:4: WARNING - name global is not defined in the externs.
+window.CacheApiDB = global.CacheApiDB = this.CacheApiDB = self.CacheApiDB = function(store, options) {
+                    ^
+
+0 error(s), 2 warning(s)

@@ -1,0 +1,31 @@
+{
+    "name": "cache-api-keyval",
+    "version": "1.0.1",
+    "description": "Cache API key/value store with expiration and JSON object data-type storage.",
+    "author": {
+        "name": "info@optimization.team",
+        "email": "info@optimization.team",
+        "web": "optimization.team"
+    },
+    "keywords": ["Cache", "IndexedDB", "Cache API", "CacheStorage", "keyvalue", "keyval", "key/value"],
+
+    "homepage": "https://github.com/optimalisatie/",
+    "copyright": "Copyright (C) 2018 Optimization.Team, Utrecht, NLD",
+    "main": "cache-api-keyval.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/optimalisatie/exec.js.git"
+    },
+    "engines": {
+        "node": "~0.10"
+    },
+    "dependencies": {
+
+    },
+    "devDependencies": {
+        "grunt": "latest",
+        "grunt-closure-compiler": "latest",
+        "matchdep": "latest",
+        "merge": "latest"
+    }
+}
