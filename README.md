@@ -36,6 +36,9 @@ if (db.supported) { // Cache API supported by browser
         console.log('json object', json);
     });
 
+    // delete key from database
+    db.del('key2'); 
+
     // prune expired cache entries
     db.prune();
 
