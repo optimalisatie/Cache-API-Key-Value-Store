@@ -1,7 +1,7 @@
 {
     "name": "cache-api-keyval",
-    "version": "1.0.1",
-    "description": "Cache API key/value store with expiration and JSON object data-type storage.",
+    "version": "1.0.5",
+    "description": "Browser Cache API key/value store with +50MB capacity, expiration and JSON object data-type storage.",
     "author": {
         "name": "info@optimization.team",
         "email": "info@optimization.team",
@@ -14,14 +14,12 @@
     "main": "cache-api-keyval.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/optimalisatie/exec.js.git"
+        "url": "git+https://github.com/optimalisatie/Cache-API-Key-Value-Store.git"
     },
     "engines": {
         "node": "~0.10"
     },
-    "dependencies": {
-
-    },
+    "dependencies": {},
     "devDependencies": {
         "grunt": "latest",
         "grunt-closure-compiler": "latest",
