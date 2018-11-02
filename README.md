@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/github/release/optimalisatie/cache-api-keyval-store.svg)
+![Version](https://img.shields.io/github/release/optimalisatie/Cache-API-Key-Value-Store.svg)
 
 # Cache API Key/Value Store
 
