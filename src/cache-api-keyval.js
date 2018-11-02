@@ -40,8 +40,8 @@
     }
 
     // open cache storage
-    function CACHE_OPEN(store) {
-        return caches.open(store);
+    function CACHE_OPEN(store, callback) {
+        return caches.open(store).then(callback);
     }
 
     // return cache key
@@ -51,7 +51,7 @@
 
     // get key from cache
     function CACHE_GET(store, key) {
-        return CACHE_OPEN(store).then(function(cache) {
+        return CACHE_OPEN(store, function(cache) {
 
             var cache_key = CACHE_KEY(key);
 
@@ -73,7 +73,7 @@
 
     // set key in cache
     function CACHE_SET(store, key, data, expire) {
-        return CACHE_OPEN(store).then(function(cache) {
+        return CACHE_OPEN(store, function(cache) {
 
             var cache_key = CACHE_KEY(key);
 
@@ -82,8 +82,8 @@
             // cache date
             cache_headers[DATE_HEADER] = NOW();
 
-            // content type
-            if (typeof data === 'object') {
+            // JSON content type
+            if (IS_OBJECT(data)) {
 
                 // JSON
                 cache_headers[CONTENT_TYPE_HEADER] = CONTENT_TYPE_JSON;
@@ -129,7 +129,7 @@
 
     // set key in cache
     function CACHE_DELETE(store, key) {
-        return CACHE_OPEN(store).then(function(cache) {
+        return CACHE_OPEN(store, function(cache) {
             var cache_key = CACHE_KEY(key);
             return cache.delete(cache_key);
         });
@@ -137,7 +137,7 @@
 
     // set key in cache
     function CACHE_PRUNE(store, key) {
-        return CACHE_OPEN(store).then(function(cache) {
+        return CACHE_OPEN(store, function(cache) {
 
             // get all keys from store
             return cache.keys().then(function(keys) {
