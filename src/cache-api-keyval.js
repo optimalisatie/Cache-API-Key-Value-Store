@@ -25,9 +25,12 @@
     }
 
     // set cache api db controller
-    function setCacheApiDB(factory) {
+    function setCacheApiDB(fallbackFactory) {
 
-        _root.CacheApiDB = factory;
+        // set fallback
+        if (fallbackFactory) {
+            _root.CacheApiDB = fallbackFactory;
+        }
 
         // process callback queue
         var callback = queue.shift();
@@ -36,12 +39,12 @@
         }
     }
 
-    var nosupport_error = 'Browser does not support Cache API';
+    var nosupport_error = 'No Cache API';
 
     if (!_root.CacheApiDBFallback) {
         _root.CacheApiDBFallback = function() {
             var that = this;
-            that.supported = 0;
+            that.no = 1;
             ['get', 'set', 'del', 'prune'].forEach(function(method) {
                 that[method] = function() {
                     return Promise.reject(nosupport_error);
@@ -56,24 +59,31 @@
         _root.CacheApiDB = _root.CacheApiDBFallback;
     } else {
 
-        // test cache support
-        // Cache API could be blocked by browser privacy settings
+        // enable instant usage of Cache API store
+        _root.CacheApiDB = factory();
+
+        // test if Cache API is blocked by browser privacy settings
         caches.open('x').catch(function(e) {
-            if (e.name == 'SecurityError') {
-                print_error('Cache API is blocked by browser. Please check privacy settings (cookies, no-track option etc).');
-            } else {
-                print_error('Cache API error: ' + e.message);
+
+            // report errors unrelated to privacy settings
+            if (e.name != 'SecurityError') {
+                print_error('Cache API: ' + e.message);
             }
+
+            // fallback
             setCacheApiDB(_root.CacheApiDBFallback);
+
         }).then(function() {
-            setCacheApiDB(factory());
+
+            // continue with Cache API
+            setCacheApiDB();
         })
 
     }
 })(function() {
 
-    var DATE_HEADER = 'x-date';
-    var EXPIRE_HEADER = 'x-expire';
+    var DATE_HEADER = 'x-d';
+    var EXPIRE_HEADER = 'x-e';
     var CONTENT_TYPE_HEADER = 'Content-Type';
 
     // return timestamp
@@ -95,12 +105,16 @@
     function CACHE_GET(store, key) {
         return CACHE_OPEN(store, function(cache) {
 
+            if (IS_UNDEFINED(key)) {
+                ERROR();
+            }
+
             var cache_key = CACHE_KEY(key);
 
             return cache.match(cache_key).then(function(cachedata) {
 
                 // handle expiration
-                if (!cachedata || CACHE_EXPIRED(cachedata)) {
+                if (!cachedata || CACHE_EXPIRED(store, cache_key, cachedata, 1)) {
                     return false;
                 }
 
@@ -114,12 +128,13 @@
     function CACHE_SET(store, key, data, expire) {
         return CACHE_OPEN(store, function(cache) {
 
+            if (IS_UNDEFINED(key) || IS_UNDEFINED(data)) {
+                ERROR();
+            }
+
             var cache_key = CACHE_KEY(key);
 
             var cache_headers = {};
-
-            // cache date
-            cache_headers[DATE_HEADER] = NOW();
 
             // JSON
             cache_headers[CONTENT_TYPE_HEADER] = 'application/json';
@@ -127,9 +142,13 @@
 
             // expire time
             if (expire) {
-                expire = parseInt(expire);
+
+                // cache date
+                cache_headers[DATE_HEADER] = NOW();
+
+                expire = INT(expire);
                 if (isNaN(expire) || expire < 0) {
-                    ERROR('Expire time not numeric');
+                    ERROR();
                 }
                 cache_headers[EXPIRE_HEADER] = STRING(expire);
             }
@@ -144,30 +163,36 @@
     }
 
     // return cache expired state
-    function CACHE_EXPIRED(cachedata) {
+    function CACHE_EXPIRED(store, cache_key, cachedata) {
         var exp = cachedata.headers.get(EXPIRE_HEADER);
-        if (exp) {
-
-            var date = cachedata.headers.get(DATE_HEADER);
+        var date = cachedata.headers.get(DATE_HEADER);
+        if (exp && date) {
+            exp = INT(exp);
+            date = INT(date);
 
             // expired
             if ((date + exp) < NOW()) {
-                CACHE_DELETE(store, key);
+                CACHE_DELETE(store, cache_key, 1);
                 return true;
             }
         }
     }
 
     // set key in cache
-    function CACHE_DELETE(store, key) {
+    function CACHE_DELETE(store, key, cache_key) {
         return CACHE_OPEN(store, function(cache) {
-            var cache_key = CACHE_KEY(key);
-            return cache.delete(cache_key);
+
+            if (IS_UNDEFINED(key)) {
+                ERROR();
+            }
+
+            key = (cache_key) ? key : CACHE_KEY(key);
+            return cache.delete(key);
         });
     }
 
     // set key in cache
-    function CACHE_PRUNE(store, key) {
+    function CACHE_PRUNE(store) {
         return CACHE_OPEN(store, function(cache) {
 
             // get all keys from store
@@ -188,7 +213,7 @@
                         cacheEntries.forEach(function(cachedata, key) {
 
                             // run expired check, auto-deletes expired entry
-                            CACHE_EXPIRED(cachedata);
+                            CACHE_EXPIRED(store, key, cachedata);
                         });
                     });
             });
@@ -200,7 +225,6 @@
         var that = this;
         if (that instanceof CACHE) {
             that.store = store;
-            that.supported = 1;
 
             if (IS_OBJECT(options)) {
                 if (options.namespace) {
@@ -224,14 +248,29 @@
         return str.toString();
     }
 
+    // return INTEGER
+    function INT(num) {
+        return parseInt(num);
+    }
+
+    // type check
+    function IS(obj, type) {
+        return typeof obj === type;
+    }
+
     // detect if object
     function IS_OBJECT(obj) {
-        return typeof obj == 'object';
+        return IS(obj, 'object');
+    }
+
+    // detect if undefined
+    function IS_UNDEFINED(obj) {
+        return IS(obj, 'undefined');
     }
 
     // output error
     function ERROR(msg) {
-        throw new Error(msg);
+        throw new Error(msg || 'input');
     }
 
     // public get method
@@ -241,7 +280,7 @@
 
     // public set method
     CACHE.prototype.set = function(key, value, expire) {
-        return CACHE_SET(this.store, NAMESPACE(this.ns, key), value);
+        return CACHE_SET(this.store, NAMESPACE(this.ns, key), value, expire);
     }
 
     // public delete method

@@ -7,13 +7,30 @@ window.CacheApiDB = global.CacheApiDB = this.CacheApiDB = self.CacheApiDB = wind
     options.namespace = '';
 
     return {
-        supported: false,
+        no: 1,
         get: function() {},
         set: function() {},
         del: function() {},
         prune: function() {}
     }
 }
+
+function CACHE(store, options) {
+    this.no = 1;
+}
+
+
+// public get method
+CACHE.prototype.get = function(key) {}
+
+// public set method
+CACHE.prototype.set = function(key, value, expire) {}
+
+// public delete method
+CACHE.prototype.del = function(key) {}
+
+// public cache prune method
+CACHE.prototype.prune = function() {}
 
 var cache_headers = {
     "x-date": '',

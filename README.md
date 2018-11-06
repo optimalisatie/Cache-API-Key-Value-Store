@@ -20,33 +20,37 @@ npm install --save cache-api-keyval
 <script src="/cache-api-keyval.js"></script>
 <script>
 
+// load database
+var db = new CacheApiDB('my-store', { namespace: 'optional' });
+
+// set JSON object data
+db.set('key', { json: 'object' }); 
+
+// set text data with expiration in 24 hours
+db.set('key2', 'string', 86400); 
+
+// get data from cache
+db.get('key').then(function(json) {
+    console.log('json object', json);
+});
+
+// delete key from database
+db.del('key2'); 
+
+// prune expired cache entries
+db.prune();
+
+// if no fallback is provided, all methods will reject and the constructor will contain `no` with integer 1.
+if (db.no === 1) { // === 1 is optional
+    // Cache API is not supported by the browser
+}
+
 // optional: wait for async browser check to complete
 // the test checks if Cache API is blocked by privacy or cookie settings
-// the callback is not required if you initiate the database sufficient time after the cache-api-keyval.js script is loaded
+// when blocked, the fallback storage is loaded
 onCacheApiDB(function() {
 
-    // load database
-    var db = new CacheApiDB('my-store', { namespace: 'optional' });
-
-    if (db.supported) { // Cache API supported by browser
-
-        // set JSON object data
-        db.set('key', { json: 'object' }); 
-
-        // set text data with expiration in 24 hours
-        db.set('key2', 'string', 86400); 
-
-        // get data from cache
-        db.get('key').then(function(json) {
-            console.log('json object', json);
-        });
-
-        // delete key from database
-        db.del('key2'); 
-
-        // prune expired cache entries
-        db.prune();
-    }
+    /* initiate database with certain availability */
 
 });
 </script>

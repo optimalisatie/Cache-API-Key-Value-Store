@@ -1,13 +1,13 @@
 {
     "name": "cache-api-keyval",
-    "version": "1.0.6",
+    "version": "1.0.8",
     "description": "Browser Cache API key/value store with +50MB capacity, expiration and JSON object data-type storage.",
     "author": {
         "name": "info@optimization.team",
         "email": "info@optimization.team",
         "web": "optimization.team"
     },
-    "keywords": ["Cache", "IndexedDB", "Cache API", "CacheStorage", "keyvalue", "keyval", "key/value"],
+    "keywords": ["Cache", "IndexedDB", "Cache API", "CacheStorage", "keyvalue", "keyval", "key/value", "localstorage"],
     "homepage": "https://github.com/optimalisatie/",
     "copyright": "Copyright (C) 2018 Optimization.Team, Utrecht, NLD",
     "main": "cache-api-keyval.js",
