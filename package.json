@@ -1,6 +1,6 @@
 {
     "name": "cache-api-keyval",
-    "version": "1.0.10",
+    "version": "1.1.0",
     "description": "Browser Cache API key/value store with +50MB capacity, expiration and JSON object data-type storage.",
     "author": {
         "name": "info@optimization.team",
@@ -31,7 +31,6 @@
     "devDependencies": {
         "grunt": "latest",
         "grunt-closure-compiler": "latest",
-        "grunt-contrib-uglify": "latest",
         "matchdep": "latest",
         "merge": "latest"
     }

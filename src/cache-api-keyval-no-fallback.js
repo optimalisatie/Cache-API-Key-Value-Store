@@ -2,6 +2,11 @@
  * Cache API key/value store - github.com/optimalisatie/Cache-API-Key-Value-Store
  * Released under the terms of MIT license
  *
+ * Smaller version
+ * 
+ * - no fallback mechanism
+ * - no error messages
+ *
  * Copyright (C) 2018 github.com/optimalisatie
  */
 
@@ -9,90 +14,13 @@
 
     var _root = ("undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this);
 
-    // filtered out by Google Closure Compiler to create .silent.js version
-    if (!SILENT) {
-        function print_error(msg) {
-            if (console) {
-                console.error(msg);
-            }
-        }
-
-
-        var queue = [];
-        _root.onCacheApiDB = function(callback) {
-            if (_root.CacheApiDB) {
-                callback();
-            } else {
-                queue.push(callback);
-            }
-        }
-
-        // set cache api db controller
-        function setCacheApiDB(fallbackFactory) {
-
-            // set fallback
-            if (fallbackFactory) {
-                _root.CacheApiDB = fallbackFactory;
-            }
-
-            // process callback queue
-            var callback = queue.shift();
-            while (callback) {
-                callback();
-            }
-        }
-
-        var nosupport_error = 'No Cache API';
-
-        if (!_root.CacheApiDBFallback) {
-            _root.CacheApiDBFallback = function() {
-                var that = this;
-                that.no = 1;
-                ['get', 'set', 'del', 'prune'].forEach(function(method) {
-                    that[method] = function() {
-                        return Promise.reject(nosupport_error);
-                    }
-                });
-            }
-        }
-    }
-
     // detect Cache API support
     if (!("caches" in _root) || !(caches instanceof CacheStorage)) {
-
-        // filtered out by Google Closure Compiler to create .silent.js version
-        if (SILENT) {
-            return;
-        } else {
-            print_error(nosupport_error);
-            _root.CacheApiDB = _root.CacheApiDBFallback;
-        }
+        return;
     } else {
 
         // enable instant usage of Cache API store
         _root.CacheApiDB = factory();
-
-        // filtered out by Google Closure Compiler to create .silent.js version
-        if (!SILENT) {
-
-            // test if Cache API is blocked by browser privacy settings
-            caches.open('x').catch(function(e) {
-
-                // report errors unrelated to privacy settings
-                if (e.name != 'SecurityError') {
-                    print_error('Cache API: ' + e.message);
-                }
-
-                // fallback
-                setCacheApiDB(_root.CacheApiDBFallback);
-
-            }).then(function() {
-
-                // continue with Cache API
-                setCacheApiDB();
-            });
-
-        }
 
     }
 })(function() {
@@ -284,14 +212,8 @@
     }
 
     // output error
-    function ERROR(msg) {
-
-        // filtered out by Google Closure Compiler to create .silent.js version
-        if (SILENT) {
-            throw Error();
-        } else {
-            throw Error(msg || 'input');
-        }
+    function ERROR() {
+        throw Error();
     }
 
     // public get method

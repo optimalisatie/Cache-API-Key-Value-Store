@@ -17,7 +17,7 @@ npm install --save cache-api-keyval
 # Use
 
 ```html
-<script src="/cache-api-keyval.js"></script>
+<script src="/cache-api-keyval-full.js"></script>
 <script>
 
 // load database
@@ -71,11 +71,13 @@ window.CacheApiDBFallback = function(store, options) {
 
 ## Tinier
 
-`cache-api-keyval.silent.js` is a stripped version without error reporting and fallback mechanism. It can be used with manual Cache API verification.
+The complete library provides a fallback mechanism, a check to detect if Cache API is blocked by browser privacy settings and cache expire functionality. While at `871 bytes` compressed it is small, some users may prefer just the `key/val` part with optional expire functionality.
+
+`cache-api-keyval-no-fallback.js` is a stripped version without error reporting and fallback mechanism with a size of `688 bytes`. `cache-api-keyval-no-fallback-expire.js` is further stripped of expire functionality for a compressed size of `461 bytes`.
 
 
 ```html
-<script src="/cache-api-keyval.silent.js"></script>
+<script src="/cache-api-keyval-no-fallback-expire.js"></script>
 <script>
 
 // check if Cache API is available
