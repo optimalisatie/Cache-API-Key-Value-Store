@@ -20,8 +20,9 @@ npm install --save cache-api-keyval
 <script src="/cache-api-keyval.js"></script>
 <script>
 
-// wait for Cache API accessibility test to complete
-// the test is very fast, should be instant
+// optional: wait for async browser check to complete
+// the test checks if Cache API is blocked by privacy or cookie settings
+// the callback is not required if you initiate the database sufficient time after the cache-api-keyval.js script is loaded
 onCacheApiDB(function() {
 
     // load database
