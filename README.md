@@ -42,7 +42,9 @@ db.prune();
 
 // if no fallback is provided, all methods will reject and the constructor will contain `no` with integer 1.
 if (db.no) {
+
     // Cache API is not supported by the browser
+    
 }
 
 // optional: wait for async browser check to complete
