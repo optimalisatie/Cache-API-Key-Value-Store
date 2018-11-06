@@ -15,10 +15,11 @@ window.CacheApiDB = global.CacheApiDB = this.CacheApiDB = self.CacheApiDB = wind
     }
 }
 
+window.CacheApiDBFallback = global.CacheApiDBFallback = this.CacheApiDBFallback = self.CacheApiDBFallback = window.CacheApiDB;
+
 function CACHE(store, options) {
     this.no = 1;
 }
-
 
 // public get method
 CACHE.prototype.get = function(key) {}
