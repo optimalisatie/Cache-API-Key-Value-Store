@@ -68,3 +68,21 @@ window.CacheApiDBFallback = function(store, options) {
     this.prune = function() { /* cleanup database */ }
 };
 ```
+
+## Tinier
+
+`cache-api-keyval.silent.js` is a stripped version without error reporting and fallback mechanism. It can be used with manual Cache API verification.
+
+
+```html
+<script src="/cache-api-keyval.silent.js"></script>
+<script>
+
+// check if Cache API is available
+if ("caches" in window) {
+
+    // load database
+    var db = new CacheApiDB('my-store', { namespace: 'optional' });
+
+    // ...
+}
