@@ -54,7 +54,7 @@
     }
 
     // detect Cache API support
-    if (!(caches instanceof CacheStorage)) {
+    if (!("caches" in _root) || !(caches instanceof CacheStorage)) {
         print_error(nosupport_error);
         _root.CacheApiDB = _root.CacheApiDBFallback;
     } else {
