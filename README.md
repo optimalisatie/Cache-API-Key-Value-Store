@@ -73,7 +73,7 @@ window.CacheApiDBFallback = function(store, options) {
 
 The complete library provides a fallback mechanism, a check to detect if Cache API is blocked by browser privacy settings and cache expire functionality. While at `871 bytes` compressed it is small, some users may prefer just the `key/val` part with optional expire functionality.
 
-_cache-api-keyval-no-fallback.js_ is a stripped version without error reporting and fallback mechanism with a size of `688 bytes`. _cache-api-keyval-no-fallback-expire.js_ is further stripped of expire functionality for a compressed size of `461 bytes`.
+[cache-api-keyval-no-fallback.js](https://github.com/optimalisatie/Cache-API-Key-Value-Store/blob/master/src/cache-api-keyval-no-fallback.js) is a stripped version without error reporting and fallback mechanism with a size of `688 bytes`. [cache-api-keyval-no-fallback-expire.js](https://github.com/optimalisatie/Cache-API-Key-Value-Store/blob/master/src/cache-api-keyval-no-fallback-expire.js) is further stripped of expire functionality for a compressed size of `461 bytes`.
 
 
 ```html
