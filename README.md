@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/github/release/optimalisatie/Cache-API-Key-Value-Store.svg)
+![Version](https://img.shields.io/github/release/optimalisatie/Cache-API-Key-Value-Store.svg) [![npm version](https://badge.fury.io/js/cache-api-keyval.svg)](http://badge.fury.io/js/cache-api-keyval)
 
 # Cache API Key/Value Store
 
