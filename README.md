@@ -12,6 +12,34 @@ Info by Google: https://developers.google.com/web/fundamentals/instant-and-offli
 
 ## Usage
 
+### as `<script>`
+
+```html
+<script src="dist/cache-api-keyval-iife.js"></script>
+```
+
+```js
+// set JSON object data
+CacheApiDB.set('key', { json: 'object' }); 
+
+// set text data with expiration in 24 hours
+CacheApiDB.set('key2', 'string', 86400); 
+
+// get data from cache
+CacheApiDB.get('key').then(function(json) {
+    console.log('json object', json);
+});
+
+// delete key from database
+CacheApiDB.del('key2'); 
+
+// clear database
+CacheApiDB.clear();
+
+// prune expired cache entries
+CacheApiDB.prune();
+```
+
 
 ### set:
 

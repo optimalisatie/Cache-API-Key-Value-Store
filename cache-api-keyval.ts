@@ -24,7 +24,7 @@ function cacheGet(cache: any, cache_key: string) {
     return cache.match(cache_key).then(function(cachedata) {
 
         // expired check
-        if (cacheExpired(cache, cache_key, cachedata)) {
+        if (!cachedata || cacheExpired(cache, cache_key, cachedata)) {
             return;
         }
 
@@ -61,17 +61,20 @@ function cacheSet(cache: any, cache_key: string, value: any, expire?: number) {
 
 // delete expired
 function cacheExpired(cache: any, cache_key: string, cachedata: any) {
-    var headers = cachedata.headers;
+    if (cachedata) {
 
-    // expired check
-    var exp = INT(headers.get(expireHeader));
-    var date = INT(headers.get(dateHeader));
-    if (IS_INT(exp)) {
+        var headers = cachedata.headers;
 
-        // expired
-        if ((date + exp) < timestamp()) {
-            cacheDelete(cache, cache_key)
-            return 1;
+        // expired check
+        var exp = INT(headers.get(expireHeader));
+        var date = INT(headers.get(dateHeader));
+        if (IS_INT(exp)) {
+
+            // expired
+            if ((date + exp) < timestamp()) {
+                cacheDelete(cache, cache_key)
+                return 1;
+            }
         }
     }
 }
@@ -127,7 +130,7 @@ function INT(num) {
 
 // return INTEGER
 function IS_INT(num) {
-    return isNaN(num);
+    return !isNaN(num);
 }
 
 export function get<Type>(key: string, store?: string): Promise<void> {
@@ -143,13 +146,13 @@ export function del(key: string, store?: string): Promise<void> {
 }
 
 export function clear(store?: string): Promise<void> {
-  return cacheClear(store);
+  return getStore(store, '', cacheClear);
 }
 
 export function prune(store?: string): Promise<void> {
-  return cachePrune(store);
+  return getStore(store, '', cachePrune);
 }
 
-export function keys(store?: string): Promise<String[]> {
-  return cacheKeys(store);
+export function keys(store?: string): Promise<void> {
+  return getStore(store, '', cacheKeys);
 }
